@@ -237,6 +237,12 @@ func (c *controllerAPI) PutJob(ctx context.Context, w http.ResponseWriter, req *
 	}
 
 	job.AppID = app.ID
+
+	if err := schemaValidate(job); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err := c.jobRepo.Add(&job); err != nil {
 		respondWithError(w, err)
 		return
@@ -444,6 +450,11 @@ func (c *controllerAPI) KillJob(ctx context.Context, w http.ResponseWriter, req 
 func (c *controllerAPI) RunJob(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	var newJob ct.NewJob
 	if err := httphelper.DecodeJSON(req, &newJob); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
+	if err := schemaValidate(newJob); err != nil {
 		respondWithError(w, err)
 		return
 	}

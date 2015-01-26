@@ -121,6 +121,8 @@ func respondWithError(w http.ResponseWriter, err error) {
 }
 
 func appHandler(c handlerConfig) http.Handler {
+	loadSchemas()
+
 	providerRepo := NewProviderRepo(c.db)
 	keyRepo := NewKeyRepo(c.db)
 	resourceRepo := NewResourceRepo(c.db)
@@ -151,6 +153,8 @@ func appHandler(c handlerConfig) http.Handler {
 	crud(httpRouter, "providers", ct.Provider{}, providerRepo)
 	crud(httpRouter, "artifacts", ct.Artifact{}, artifactRepo)
 	crud(httpRouter, "keys", ct.Key{}, keyRepo)
+
+	httpRouter.POST("/apps/:apps_id", httphelper.WrapHandler(api.UpdateApp))
 
 	httpRouter.PUT("/apps/:apps_id/formations/:releases_id", httphelper.WrapHandler(api.appLookup(api.PutFormation)))
 	httpRouter.GET("/apps/:apps_id/formations/:releases_id", httphelper.WrapHandler(api.appLookup(api.GetFormation)))

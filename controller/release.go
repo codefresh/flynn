@@ -115,6 +115,12 @@ func (c *controllerAPI) SetAppRelease(ctx context.Context, w http.ResponseWriter
 		return
 	}
 	release := rel.(*ct.Release)
+
+	if err := schemaValidate(release); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	app := c.getApp(ctx)
 	c.appRepo.SetRelease(app.ID, release.ID)
 	httphelper.JSON(w, 200, release)

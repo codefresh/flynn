@@ -19,10 +19,6 @@ type Remover interface {
 	Remove(string) error
 }
 
-type Updater interface {
-	Update(string, map[string]interface{}) (interface{}, error)
-}
-
 func crud(r *httprouter.Router, resource string, example interface{}, repo Repository) {
 	resourceType := reflect.TypeOf(example)
 	prefix := "/" + resource
@@ -34,8 +30,12 @@ func crud(r *httprouter.Router, resource string, example interface{}, repo Repos
 			return
 		}
 
-		err := repo.Add(thing)
-		if err != nil {
+		if err := schemaValidate(thing); err != nil {
+			respondWithError(rw, err)
+			return
+		}
+
+		if err := repo.Add(thing); err != nil {
 			respondWithError(rw, err)
 			return
 		}
@@ -78,24 +78,6 @@ func crud(r *httprouter.Router, resource string, example interface{}, repo Repos
 				return
 			}
 			rw.WriteHeader(200)
-		}))
-	}
-
-	if updater, ok := repo.(Updater); ok {
-		r.POST(singletonPath, httphelper.WrapHandler(func(ctx context.Context, rw http.ResponseWriter, req *http.Request) {
-			params := httphelper.ParamsFromContext(ctx)
-
-			var data map[string]interface{}
-			if err := httphelper.DecodeJSON(req, &data); err != nil {
-				respondWithError(rw, err)
-				return
-			}
-			app, err := updater.Update(params.ByName(resource+"_id"), data)
-			if err != nil {
-				respondWithError(rw, err)
-				return
-			}
-			httphelper.JSON(rw, 200, app)
 		}))
 	}
 }

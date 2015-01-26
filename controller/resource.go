@@ -187,6 +187,12 @@ func (c *controllerAPI) ProvisionResource(ctx context.Context, w http.ResponseWr
 		Env:        data.Env,
 		Apps:       rr.Apps,
 	}
+
+	if err := schemaValidate(res); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err := c.resourceRepo.Add(res); err != nil {
 		// TODO: attempt to "rollback" provisioning
 		respondWithError(w, err)
@@ -244,6 +250,12 @@ func (c *controllerAPI) PutResource(ctx context.Context, w http.ResponseWriter, 
 
 	resource.ID = params.ByName("resources_id")
 	resource.ProviderID = p.ID
+
+	if err := schemaValidate(resource); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err := c.resourceRepo.Add(&resource); err != nil {
 		respondWithError(w, err)
 		return

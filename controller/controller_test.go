@@ -206,7 +206,7 @@ func (s *S) TestCreateArtifact(c *C) {
 	for i, id := range []string{"", random.UUID()} {
 		in := &ct.Artifact{
 			ID:   id,
-			Type: "docker-image",
+			Type: "docker",
 			URI:  fmt.Sprintf("docker://flynn/host?id=adsf%d", i),
 		}
 		out := s.createTestArtifact(c, in)

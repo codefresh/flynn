@@ -282,6 +282,12 @@ func (c *controllerAPI) PutFormation(ctx context.Context, w http.ResponseWriter,
 			}
 		}
 	}
+
+	if err = schemaValidate(formation); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err = c.formationRepo.Add(&formation); err != nil {
 		respondWithError(w, err)
 		return

@@ -137,6 +137,12 @@ func (c *controllerAPI) CreateDeployment(ctx context.Context, w http.ResponseWri
 		NewReleaseID: release.ID,
 		Strategy:     app.Strategy,
 	}
+
+	if err := schemaValidate(deployment); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err := c.deploymentRepo.Add(deployment); err != nil {
 		if e, ok := err.(*pq.Error); ok && e.Code.Name() == "unique_violation" && e.Constraint == "isolate_deploys" {
 			httphelper.Error(w, httphelper.JSONError{

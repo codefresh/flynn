@@ -17,6 +17,12 @@ func (c *controllerAPI) CreateRoute(ctx context.Context, w http.ResponseWriter, 
 	}
 
 	route.ParentRef = routeParentRef(c.getApp(ctx).ID)
+
+	if err := schemaValidate(route); err != nil {
+		respondWithError(w, err)
+		return
+	}
+
 	if err := c.routerc.CreateRoute(&route); err != nil {
 		respondWithError(w, err)
 		return
