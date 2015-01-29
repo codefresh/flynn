@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/flynn/flynn/Godeps/_workspace/src/golang.org/x/net/context"
+	"github.com/flynn/flynn/controller/schema"
 	"github.com/flynn/flynn/pkg/httphelper"
 	routerc "github.com/flynn/flynn/router/client"
 	"github.com/flynn/flynn/router/types"
@@ -18,7 +19,7 @@ func (c *controllerAPI) CreateRoute(ctx context.Context, w http.ResponseWriter, 
 
 	route.ParentRef = routeParentRef(c.getApp(ctx).ID)
 
-	if err := schemaValidate(route); err != nil {
+	if err := schema.Validate(route); err != nil {
 		respondWithError(w, err)
 		return
 	}

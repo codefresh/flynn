@@ -7,6 +7,7 @@ import (
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/flynn/go-sql"
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/flynn/pq/hstore"
 	"github.com/flynn/flynn/Godeps/_workspace/src/golang.org/x/net/context"
+	"github.com/flynn/flynn/controller/schema"
 	ct "github.com/flynn/flynn/controller/types"
 	"github.com/flynn/flynn/pkg/httphelper"
 	"github.com/flynn/flynn/pkg/postgres"
@@ -188,7 +189,7 @@ func (c *controllerAPI) ProvisionResource(ctx context.Context, w http.ResponseWr
 		Apps:       rr.Apps,
 	}
 
-	if err := schemaValidate(res); err != nil {
+	if err := schema.Validate(res); err != nil {
 		respondWithError(w, err)
 		return
 	}
@@ -251,7 +252,7 @@ func (c *controllerAPI) PutResource(ctx context.Context, w http.ResponseWriter, 
 	resource.ID = params.ByName("resources_id")
 	resource.ProviderID = p.ID
 
-	if err := schemaValidate(resource); err != nil {
+	if err := schema.Validate(resource); err != nil {
 		respondWithError(w, err)
 		return
 	}

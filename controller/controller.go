@@ -17,6 +17,7 @@ import (
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/julienschmidt/httprouter"
 	"github.com/flynn/flynn/Godeps/_workspace/src/golang.org/x/net/context"
 	"github.com/flynn/flynn/controller/name"
+	"github.com/flynn/flynn/controller/schema"
 	ct "github.com/flynn/flynn/controller/types"
 	"github.com/flynn/flynn/discoverd/client"
 	"github.com/flynn/flynn/pkg/cluster"
@@ -121,7 +122,7 @@ func respondWithError(w http.ResponseWriter, err error) {
 }
 
 func appHandler(c handlerConfig) http.Handler {
-	loadSchemas()
+	schema.Load()
 
 	providerRepo := NewProviderRepo(c.db)
 	keyRepo := NewKeyRepo(c.db)

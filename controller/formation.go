@@ -13,6 +13,7 @@ import (
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/flynn/pq"
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/flynn/pq/hstore"
 	"github.com/flynn/flynn/Godeps/_workspace/src/golang.org/x/net/context"
+	"github.com/flynn/flynn/controller/schema"
 	ct "github.com/flynn/flynn/controller/types"
 	"github.com/flynn/flynn/pkg/httphelper"
 	"github.com/flynn/flynn/pkg/postgres"
@@ -283,7 +284,7 @@ func (c *controllerAPI) PutFormation(ctx context.Context, w http.ResponseWriter,
 		}
 	}
 
-	if err = schemaValidate(formation); err != nil {
+	if err = schema.Validate(formation); err != nil {
 		respondWithError(w, err)
 		return
 	}

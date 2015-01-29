@@ -1,4 +1,4 @@
-package main
+package schema
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ import (
 
 var schemaCache map[string]*jsonschema.Schema
 
-func loadSchemas() error {
+func Load() error {
 	if schemaCache != nil {
 		return nil
 	}
@@ -70,7 +70,7 @@ func schemaForType(thing interface{}) *jsonschema.Schema {
 	return schemaCache[cacheKey]
 }
 
-func schemaValidate(thing interface{}) error {
+func Validate(thing interface{}) error {
 	schema := schemaForType(thing)
 	if schema == nil {
 		return errors.New("Unknown resource")

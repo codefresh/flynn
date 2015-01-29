@@ -13,6 +13,7 @@ import (
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/flynn/pq"
 	"github.com/flynn/flynn/Godeps/_workspace/src/github.com/jackc/pgx"
 	"github.com/flynn/flynn/Godeps/_workspace/src/golang.org/x/net/context"
+	"github.com/flynn/flynn/controller/schema"
 	ct "github.com/flynn/flynn/controller/types"
 	"github.com/flynn/flynn/pkg/httphelper"
 	"github.com/flynn/flynn/pkg/postgres"
@@ -138,7 +139,7 @@ func (c *controllerAPI) CreateDeployment(ctx context.Context, w http.ResponseWri
 		Strategy:     app.Strategy,
 	}
 
-	if err := schemaValidate(deployment); err != nil {
+	if err := schema.Validate(deployment); err != nil {
 		respondWithError(w, err)
 		return
 	}
